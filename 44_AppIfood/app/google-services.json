@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "906229730109",
+    "project_id": "appifood-18d0b",
+    "storage_bucket": "appifood-18d0b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906229730109:android:604d732a723f8054ac1354",
+        "android_client_info": {
+          "package_name": "com.example.appifood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906229730109-d1mgg5f3l2q3remuvf7iuovi6k6lk53i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.appifood",
+            "certificate_hash": "aadbc8e7ee13111f82dd694a17f51000c4843606"
+          }
+        },
+        {
+          "client_id": "906229730109-1ct2ug8ih3ng5jrpl299pdu9qkm9lhh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpP6fBH71952_UljXdYAiz_wPjmBDZwaU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906229730109-1ct2ug8ih3ng5jrpl299pdu9qkm9lhh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
