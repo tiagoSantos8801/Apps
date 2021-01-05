@@ -10,19 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppIfood">
 
+        <activity android:name=".activity.CardapioActivity"
+                  android:parentActivityName=".activity.HomeActivity"/>
         <activity
             android:name=".activity.ConfiguracoesUsuarioActivity"
-            android:parentActivityName=".activity.HomeActivity"/>
-
+            android:parentActivityName=".activity.HomeActivity" />
         <!-- android:parentActivityName=".activity.EmpresaActivity" -> Quam esta dentro de quem parentesco (Parent) -->
         <activity
             android:name=".activity.ConfiguracoesEmpresaActivity"
             android:parentActivityName=".activity.EmpresaActivity" />
-
         <activity
             android:name=".activity.NovoProdutoEmpresaActivity"
             android:parentActivityName=".activity.EmpresaActivity" />
-
         <activity android:name=".activity.EmpresaActivity" />
         <activity android:name=".activity.HomeActivity" />
         <activity android:name=".activity.AutenticationActivity" />

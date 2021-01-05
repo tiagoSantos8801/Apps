@@ -4,7 +4,9 @@ import com.example.appifood.helper.ConfiguracaoFireBase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
-public class Empresa {
+import java.io.Serializable;
+
+public class Empresa implements Serializable {//Passar a empresa escolhida para cardapio
 
      private String idUsuario;
      private String urlImagem;
@@ -24,8 +26,7 @@ public class Empresa {
 
           empresaRef.setValue(this);//Passando o obj
      }
-
-     @Exclude
+     
      public String getIdUsuario() {
           return idUsuario;
      }

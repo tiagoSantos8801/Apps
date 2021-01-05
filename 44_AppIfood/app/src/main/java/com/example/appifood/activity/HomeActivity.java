@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appifood.R;
 import com.example.appifood.adapter.AdapterEmpresa;
 import com.example.appifood.helper.ConfiguracaoFireBase;
+import com.example.appifood.helper.RecyclerItemClickListener;
 import com.example.appifood.model.Empresa;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -72,7 +75,39 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
                }
           });
+
+          //Configurando evento de clck no recyclerView
+          recyclerView.addOnItemTouchListener(
+                  new RecyclerItemClickListener(
+                          this,
+                          recyclerView,
+                          new RecyclerItemClickListener.OnItemClickListener() {
+                               @Override
+                               public void onItemClick(View view, int position) {
+
+
+                                    Empresa empresaSelecionada = empresas.get(position);//Pega empresa da lista
+                                    Intent intent = new Intent(HomeActivity.this, CardapioActivity.class);//Abri actv
+                                    intent.putExtra("empresa", empresaSelecionada);//Passa classe(empreza) serializable
+                                    startActivity(intent);//Inicia nova activity
+                               }
+
+                               @Override
+                               public void onLongItemClick(View view, int position) {
+
+                               }
+
+                               @Override
+                               public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                               }
+                          }
+                  )
+          );
+
      }    
+
+
 
      private void pesquisarEmpresas(String pesquisa){
 
