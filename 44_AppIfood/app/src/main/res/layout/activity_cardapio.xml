@@ -15,35 +15,68 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageEmpresaCardapio"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_weight="0"
+            android:src="@drawable/perfil" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textNomeEmpresaCardapio"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="0"
+            android:text="China in box"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageEmpresaCardapio"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_weight="0"
-                android:src="@drawable/perfil" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorButtonNormal"
+        android:gravity="center">
 
-            <TextView
-                android:id="@+id/textNomeEmpresaCardapio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="0"
-                android:text="China in box"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Ver carrinho"
+            android:textColor="#FFFFFF"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Qtd: "
+            android:textColor="@color/white"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="R$ 0"
+            android:textColor="@color/white"
+            android:padding="10dp"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -54,5 +87,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </LinearLayout>
