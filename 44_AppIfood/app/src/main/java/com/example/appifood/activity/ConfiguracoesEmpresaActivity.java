@@ -104,7 +104,6 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                                       .load(urlImagemSelecionada)//carrega a img
                                       .into(fotoPerfilEmp);//recupera
                          }
-
                     }
                }
 
@@ -116,7 +115,7 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
      }
 
      //Pegando o resultado
-     @Override                          //id requisicao
+     @Override                      //id requisicao
      protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
           super.onActivityResult(requestCode, resultCode, data);
 
@@ -137,7 +136,7 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                          //Formato de trafego https
                          ByteArrayOutputStream baos = new ByteArrayOutputStream();
                          imagem.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-                         byte[] dadosImagem = baos.toByteArray();
+                         byte[] dadosImagem = baos.toByteArray();//Formato para saida de arquivos
 
                          StorageReference imageRef = storageReference.child("imagens")
                                                                       .child("empresas")
@@ -218,12 +217,12 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
 
      public void inicializarComponemtes(){
 
-          nomeEmp = findViewById(R.id.nomeEmp);
-          catedoriaEmp = findViewById(R.id.categoriaEmp);
-          tempoEntregaEmp = findViewById(R.id.tempoEntregaEmp);
+          nomeEmp = findViewById(R.id.nomeUsuario);
+          catedoriaEmp = findViewById(R.id.cidadeBairro);
+          tempoEntregaEmp = findViewById(R.id.ruaBairro);
           taxaEmp = findViewById(R.id.taxaEmp);
-          buttonSalvarEmp = findViewById(R.id.buttonSalvar);
-          fotoPerfilEmp = findViewById(R.id.imagePerfilEmpresa);
+          buttonSalvarEmp = findViewById(R.id.buttonSalvarUsuario);
+          fotoPerfilEmp = findViewById(R.id.imagePerfilUsuario);
 
           idUsuarioLogado = UsuarioFireBase.getIdUsuario();
 

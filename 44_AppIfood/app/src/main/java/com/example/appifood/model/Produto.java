@@ -20,7 +20,7 @@ public class Produto {
           DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
           DatabaseReference produtoRef = databaseRef.child("produtos")
                                                        .child(getIdUsuario())
-                                                       .child(getidProduto());//Id fireBase
+                                                       .child(getidProduto());//Id fireBase push
           produtoRef.setValue(this);
 
      }
