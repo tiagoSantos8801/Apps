@@ -3,12 +3,13 @@ package com.example.appifood.model;
 import com.example.appifood.helper.ConfiguracaoFireBase;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Pedido {
 
      private String idusuario, idEmpresa, idPedido,
-                    nome, cidadeBairro, ruaNumero, status = "pendente",
+                    nome, cidadeBairro, ruaNumero, status = "Pendente",
                     observacao;
      private List<ItemPedido> itens;
      private Double total;
@@ -19,14 +20,14 @@ public class Pedido {
      }
 
      public Pedido(String idusuario, String idEmpresa) {
-          setIdusuario(idEmpresa);
-          setIdEmpresa(idusuario);
+          setIdusuario(idusuario);
+          setIdEmpresa(idEmpresa);
 
           //Referencia do fireBase - Nos de armazenamento
           DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
           DatabaseReference pedidoRef = databaseRef.child("pedidos_usuario")
-                                                       .child(idusuario)
-                                                       .child(idEmpresa);
+                                                       .child(idEmpresa)
+                                                       .child(idusuario);
           setIdPedido(pedidoRef.push().getKey());//Pega o idPedido
 
      }
@@ -37,6 +38,35 @@ public class Pedido {
                                                        .child(getIdEmpresa())
                                                        .child(getIdusuario());
           pedidoRef.setValue(this);
+     }
+
+     public void confirmar(){
+          DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
+          DatabaseReference pedidoRef = databaseRef.child("pedidos")
+                                                       .child(getIdEmpresa())
+                                                       .child(getIdPedido());
+          pedidoRef.setValue(this);
+     }
+
+     public void remover(){//Remove do banco toda a estrutura
+          DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
+          DatabaseReference pedidoRef = databaseRef.child("pedidos_usuario")
+                                                       .child(getIdEmpresa())
+                                                       .child(getIdusuario());
+          pedidoRef.removeValue();
+     }
+
+     public void atualizarStatus() {
+
+          //Strutura have valor
+          HashMap<String, Object> status = new HashMap<>();
+          status.put("status", getStatus());
+
+          DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
+          DatabaseReference pedidoRef = databaseRef.child("pedidos")
+                                                       .child(getIdEmpresa())
+                                                       .child(getIdPedido());
+          pedidoRef.updateChildren(status);//Atualizar um unico campo
      }
 
      public String getIdusuario() {
@@ -126,4 +156,5 @@ public class Pedido {
      public void setMetodoPagamento(int metodoPagamento) {
           this.metodoPagamento = metodoPagamento;
      }
+
 }

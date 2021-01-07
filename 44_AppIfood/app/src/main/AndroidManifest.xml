@@ -9,13 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppIfood">
-
-        <activity android:name=".activity.CardapioActivity"
-                  android:parentActivityName=".activity.HomeActivity"/>
+        <activity android:name=".activity.PedidosActivity"
+            android:parentActivityName=".activity.EmpresaActivity"/>
+        <activity
+            android:name=".activity.CardapioActivity"
+            android:parentActivityName=".activity.HomeActivity" />
         <activity
             android:name=".activity.ConfiguracoesUsuarioActivity"
-            android:parentActivityName=".activity.HomeActivity" />
-        <!-- android:parentActivityName=".activity.EmpresaActivity" -> Quam esta dentro de quem parentesco (Parent) -->
+            android:parentActivityName=".activity.HomeActivity" /> <!-- android:parentActivityName=".activity.EmpresaActivity" -> Quam esta dentro de quem parentesco (Parent) -->
         <activity
             android:name=".activity.ConfiguracoesEmpresaActivity"
             android:parentActivityName=".activity.EmpresaActivity" />

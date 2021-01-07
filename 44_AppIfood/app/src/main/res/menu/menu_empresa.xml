@@ -9,6 +9,12 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/menuPedidos"
+        android:icon="@drawable/ic_pedidos_24"
+        android:title="Pedidos"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/menuConfiguracoes"
         android:title="Configurações"
         app:showAsAction="never"/>

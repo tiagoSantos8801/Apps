@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
+import android.util.AndroidException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class CardapioActivity extends AppCompatActivity {
      private RecyclerView recyclerProdutoCardapio;
      private Empresa empresaSelecionada;
      private AlertDialog dialog;
+     private TextView textCarrinhoQtde, textCarrinhoTotal;
 
      private AdapterProduto adapterProduto;
      private List<Produto> produtos = new ArrayList<>();
@@ -58,6 +60,9 @@ public class CardapioActivity extends AppCompatActivity {
      private String idusuariologado;
      private Pedido pedidoRecuperado;
      private Usuario usuario;
+     private int qtdItensCarrinhos;
+     private double totalCarrinho;
+     private  int metodoPagamento;
 
      @Override
      protected void onCreate(Bundle savedInstanceState) {
@@ -126,37 +131,56 @@ public class CardapioActivity extends AppCompatActivity {
           builder.setTitle("Informe a quantidade");
           builder.setMessage("Digite a quantidade: ");
 
-          //Criando obj View aqui mesmo
+          //Criando View aqui mesmo
           EditText editQunatidade = new EditText(this);
-          editQunatidade.setText("0");
+          editQunatidade.setText("1");
 
           builder.setView(editQunatidade);
           builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                @Override
                public void onClick(DialogInterface dialogInterface, int i) {
-                    String quantidade = editQunatidade.getText().toString();//Qtd
+                    int quantidade = Integer.parseInt(editQunatidade.getText().toString());//Qtd -> int
 
-                    if (Integer.parseInt(quantidade) > 0){
-                         Produto produtoSelecionado = produtos.get(position);//Posicao do produto da empresa selecionada
+                    if (quantidade > 0){
+                         Produto produtoSelecionado = produtos.get(position);//Produto selecionado
 
-                         ItemPedido itemPedido = new ItemPedido();
+                         ItemPedido itemPedido = new ItemPedido();//Pega informacoes do obj produto
                          itemPedido.setIdProduto(produtoSelecionado.getidProduto());
                          itemPedido.setNomeProduto(produtoSelecionado.getNome());
                          itemPedido.setPreco(produtoSelecionado.getPreco());
-                         itemPedido.setQuantidade(Integer.parseInt(quantidade));
+                         itemPedido.setQuantidade(quantidade);
 
-                         itensCarrinho.add(itemPedido);
+                         //Validando pedidos repetidos
+                         boolean pedidoRepetido = false;
+                         if (!itensCarrinho.isEmpty()){
+                              for (ItemPedido item : itensCarrinho){
+                                   if (item.getIdProduto() == itemPedido.getIdProduto()){
+                                        item.setQuantidade(item.getQuantidade() + itemPedido.getQuantidade());
+                                        pedidoRepetido = true;
+                                   }
+                              }
+                         } else {
+                              itensCarrinho.add(itemPedido);//Primeiro produto
+                              pedidoRepetido = true;
+                         }
 
-                         if (pedidoRecuperado == null){
+                         if (!pedidoRepetido)//Nao adciona pedidos repetidos
+                              itensCarrinho.add(itemPedido);
+
+
+                         if (pedidoRecuperado == null){//Novo pedido
                               pedidoRecuperado = new Pedido(idusuariologado, idEmpresa);
                          }
 
-                         //Cinfigurando a model
+                         //Cinfigurando a model - Informacoes do pedido
                          pedidoRecuperado.setNome(usuario.getNomeUsuario());
                          pedidoRecuperado.setCidadeBairro(usuario.getCidadeBairro());
                          pedidoRecuperado.setRuaNumero(usuario.getRuaNumero());
-                         pedidoRecuperado.setItens(itensCarrinho);//Lista de itens no carrinho
+                         pedidoRecuperado.setItens(itensCarrinho);//Lista de itens do pedido (carrinho   )
                          pedidoRecuperado.salvar();
+
+                         Toast.makeText(CardapioActivity.this,
+                                 "Pedido feito com sucesso!", Toast.LENGTH_SHORT).show();
 
                     } else {
                          Toast.makeText(CardapioActivity.this,
@@ -164,6 +188,7 @@ public class CardapioActivity extends AppCompatActivity {
                     }
                }
           });
+
           builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                @Override
                public void onClick(DialogInterface dialogInterface, int i) {
@@ -177,10 +202,10 @@ public class CardapioActivity extends AppCompatActivity {
      private void recuperarDadosUsuario() {
 
           dialog = new SpotsDialog.Builder()
-                  .setContext(this)
-                  .setMessage("Carregando dados...")
-                  .setCancelable(false)
-                  .build();
+                                   .setContext(this)
+                                   .setMessage("Carregando dados...")
+                                   .setCancelable(false)
+                                   .build();
           dialog.show();
 
           DatabaseReference usuarioRef = databaseRef.child("usuarios").child(idusuariologado);
@@ -204,24 +229,66 @@ public class CardapioActivity extends AppCompatActivity {
      }
 
      private void recuperarPedido() {
-          dialog.dismiss();
+
+          DatabaseReference pedidoRef = databaseRef.child("pedidos_usuario")
+                                                  .child(idEmpresa)
+                                                  .child(idusuariologado);
+          //Listner nos pedidos
+          pedidoRef.addValueEventListener(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    qtdItensCarrinhos = 0;
+                    totalCarrinho = 0.0;
+                    itensCarrinho = new ArrayList<>();
+
+                    if (dataSnapshot.getValue() != null){//Checa se tem pedidos
+
+                         pedidoRecuperado = dataSnapshot.getValue(Pedido.class);//Formato response
+                         itensCarrinho = pedidoRecuperado.getItens();//Pega itens carrinho
+
+                         for (ItemPedido itemPedido :itensCarrinho){
+                              int qtde = itemPedido.getQuantidade();
+                              double preco = itemPedido.getPreco();
+
+                              qtdItensCarrinhos += qtde;
+                              totalCarrinho += qtde * preco;
+                         }
+                    }
+
+                    DecimalFormat format = new DecimalFormat("0.00");
+
+                    textCarrinhoQtde.setText("Qtde: " + qtdItensCarrinhos);
+                    textCarrinhoTotal.setText("R$:" + format.format(totalCarrinho));
+
+                    dialog.dismiss();
+               }
+
+               @Override
+               public void onCancelled(DatabaseError databaseError) {
+
+               }
+          });
+
      }
 
      public void recuperaProdutos(){
 
+          //Traz informacoes do banco
           DatabaseReference produtosRef = databaseRef.child("produtos")
                   .child(idEmpresa);
+
+          //Listner
           produtosRef.addValueEventListener(new ValueEventListener() {
                @Override
-               public void onDataChange(DataSnapshot dataSnapshot) {
+               public void onDataChange(DataSnapshot dataSnapshot) {//Todos os produtos
 
                     produtos.clear();//limpaLista
                     for (DataSnapshot produtosBanco : dataSnapshot.getChildren()){
-                         produtos.add(produtosBanco.getValue(Produto.class));//listando os produtos
+                         produtos.add(produtosBanco.getValue(Produto.class));//Response no fprmato desse Obj
                     }
                     adapterProduto.notifyDataSetChanged();//recarrega onbindViewHolder
                }
-
                @Override
                public void onCancelled(DatabaseError databaseError) {
 
@@ -244,7 +311,7 @@ public class CardapioActivity extends AppCompatActivity {
 
           switch (item.getItemId()){
                case R.id.menuPedido:
-                    confirmarPedido();
+                    confirmarPedido();//Dialog de confirmacao pedido
                     break;
           }
           return super.onOptionsItemSelected(item);
@@ -253,6 +320,45 @@ public class CardapioActivity extends AppCompatActivity {
      //Quando o item de menu e selecionado
      private void confirmarPedido() {
 
+          AlertDialog.Builder builder = new AlertDialog.Builder(this);
+          builder.setTitle("Informe a forma de pagamento ");
+          CharSequence[] formasPag = new CharSequence[]{//Array de formas de pagamento
+               "Dinheiro", "Máquina de Cartão"
+          };
+          builder.setSingleChoiceItems(formasPag, 0, new DialogInterface.OnClickListener() {//listner forma de pagamento
+               @Override
+               public void onClick(DialogInterface dialogInterface, int formaPagSelecionada) {
+                    metodoPagamento = formaPagSelecionada;//Forma de pagamento pre-selecionada
+               }
+          });
+
+          //Elemento da View local
+          EditText editObservacao = new EditText(this);
+          editObservacao.setHint("Informe a observação ...");
+
+          builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+                    String observacao = editObservacao.getText().toString();
+                    pedidoRecuperado.setMetodoPagamento(metodoPagamento);
+                    pedidoRecuperado.setObservacao(observacao);
+                    pedidoRecuperado.setStatus("Confirmado");
+                    pedidoRecuperado.confirmar();
+                    pedidoRecuperado.remover();
+                    pedidoRecuperado = null;
+               }
+          });
+          builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+
+               }
+          });
+
+          builder.setView(editObservacao);//Setando EditText
+          AlertDialog dialog = builder.create();
+          dialog.show();
+
      }
 
      public void inicializarComponentes(){
@@ -260,6 +366,8 @@ public class CardapioActivity extends AppCompatActivity {
           textNomeEmpresaCardapio = findViewById(R.id.textNomeEmpresaCardapio);
           imageEmpresaCardapio = findViewById(R.id.imageEmpresaCardapio);
           recyclerProdutoCardapio = findViewById(R.id.recyclerProdutoCardapio);
+          textCarrinhoQtde = findViewById(R.id.textCarrinhoQtd);
+          textCarrinhoTotal = findViewById(R.id.textCarrinhoTotal);
 
           databaseRef = ConfiguracaoFireBase.getFireBase();
           idusuariologado = UsuarioFireBase.getIdUsuario();
