@@ -1,5 +1,6 @@
 package com.example.appifood.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,6 +31,8 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 public class HomeActivity extends AppCompatActivity {
 
      private FirebaseAuth auth;//Para acessar
@@ -38,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
      private List<Empresa> empresas = new ArrayList<>();
      private DatabaseReference fireBaseRef;
      private AdapterEmpresa adapterEmpresa;
+     private AlertDialog dialog;
 
      @Override
      protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
           toolbar.setTitle("Ifood");
           setSupportActionBar(toolbar);//Toolbar como o suporte para essa activity
 
-          //Recupera empresas
+          //Recupera lista de Obj empresas do baco
           recuperaEmpresas();
 
           //Configurando recyclerView
@@ -85,18 +89,15 @@ public class HomeActivity extends AppCompatActivity {
                                @Override
                                public void onItemClick(View view, int position) {
 
-
                                     Empresa empresaSelecionada = empresas.get(position);//Pega empresa da lista
                                     Intent intent = new Intent(HomeActivity.this, CardapioActivity.class);//Abri actv
                                     intent.putExtra("empresa", empresaSelecionada);//Passa classe(empreza) serializable
                                     startActivity(intent);//Inicia nova activity
                                }
-
                                @Override
                                public void onLongItemClick(View view, int position) {
 
                                }
-
                                @Override
                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -105,9 +106,7 @@ public class HomeActivity extends AppCompatActivity {
                   )
           );
 
-     }    
-
-
+     }
 
      private void pesquisarEmpresas(String pesquisa){
 
@@ -120,9 +119,8 @@ public class HomeActivity extends AppCompatActivity {
                     empresas.clear();
                     for (DataSnapshot empresasBaco: dataSnapshot.getChildren()) {
                          empresas.add(empresasBaco.getValue(Empresa.class));
-
                     }
-                    adapterEmpresa.notifyDataSetChanged();//Atualiza o onBind
+                    adapterEmpresa.notifyDataSetChanged();//Atualiza o onBind - mudancas na lista que vai para o adapter
                }
 
                @Override
@@ -134,17 +132,25 @@ public class HomeActivity extends AppCompatActivity {
 
      private void recuperaEmpresas(){
 
+          dialog = new SpotsDialog.Builder()
+                  .setContext(this)
+                  .setMessage("Carregando dados...")
+                  .setCancelable(false)
+                  .build();
+          dialog.show();
+
           DatabaseReference empresaRef = fireBaseRef.child("empresas");
           empresaRef.addValueEventListener(new ValueEventListener() {
                @Override
                public void onDataChange(DataSnapshot dataSnapshot) {
 
                     empresas.clear();
-                    for (DataSnapshot empresasBaco: dataSnapshot.getChildren()) {
-                         empresas.add(empresasBaco.getValue(Empresa.class));
+                    for (DataSnapshot empresasBanco: dataSnapshot.getChildren()) {
+                         empresas.add(empresasBanco.getValue(Empresa.class));
 
                     }
                     adapterEmpresa.notifyDataSetChanged();
+                    dialog.dismiss();
                }
 
                @Override

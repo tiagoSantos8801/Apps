@@ -67,7 +67,7 @@ public class AutenticationActivity extends AppCompatActivity {
                @Override
                public void onClick(View view) {
 
-                    String email = editTextEmail.getText().toString();
+                    String email = editTextEmail.getText().toString().trim();//trim() -> Retira os espaços
                     String senha = editTextSenha.getText().toString();
 
                     if (!email.isEmpty()){//Chacer se os campos estao vazios

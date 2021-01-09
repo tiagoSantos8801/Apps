@@ -48,7 +48,8 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorButtonNormal"
-        android:gravity="center">
+        android:gravity="center"
+        android:onClick="pedidosUsuario">
 
 
         <TextView

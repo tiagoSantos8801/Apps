@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.example.appifood.R;
 import com.example.appifood.adapter.AdapterPedido;
@@ -36,6 +38,7 @@ public class PedidosActivity extends AppCompatActivity {
      private AlertDialog dialog;
      private DatabaseReference databaseRef;
      private String idEmp;
+     private RecyclerItemClickListener recycleList =  null;
 
      @Override
      protected void onCreate(Bundle savedInstanceState) {
@@ -55,52 +58,57 @@ public class PedidosActivity extends AppCompatActivity {
           recyclerPedidos.setHasFixedSize(true);
           adapterPedido = new AdapterPedido(pedidos);
           recyclerPedidos.setAdapter(adapterPedido);
-
           //Configurando click no recyclerview
-          recyclerPedidos.addOnItemTouchListener(
-                  new RecyclerItemClickListener(
-                          this,
-                          recyclerPedidos,
-                          new RecyclerItemClickListener.OnItemClickListener() {
-                               @Override
-                               public void onItemClick(View view, int position) {
-
-                               }
-
-                               @Override
-                               public void onLongItemClick(View view, int position) {
-
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(PedidosActivity.this);//this - do recycler view
-                                    builder.setTitle("Informe a forma de pagamento ");
-                                    builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                                         @Override
-                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                              Pedido pedido = pedidos.get(position);
-                                              pedido.setStatus("Finalizado!");
-                                              pedido.atualizarStatus();
-                                         }
-                                    });
-                                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                         @Override
-                                         public void onClick(DialogInterface dialogInterface, int i) {
-
-                                         }
-                                    });
-
-                                    AlertDialog dialog = builder.create();
-                                    dialog.show();
-                               }
-
-                               @Override
-                               public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                               }
-                          }
-                  )
-          );
+          inicializarListener();
+          recyclerPedidos.addOnItemTouchListener(recycleList);
 
           recuperarPedidos();
+     }
 
+     private void inicializarListener(){
+          recycleList = new RecyclerItemClickListener(
+                  this,
+                  recyclerPedidos,
+                  new RecyclerItemClickListener.OnItemClickListener() {
+                       @Override
+                       public void onItemClick(View view, int position) {
+
+                       }
+
+                       @Override
+                       public void onLongItemClick(View view, int position) {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(PedidosActivity.this);//this - do recycler view
+                            builder.setTitle("Deseja retirar da lista de pedidos ?");
+                            builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                      if (pedidos.size()==1){
+                                           recyclerPedidos.setVisibility(View.GONE);
+                                      }
+                                      Pedido pedido = pedidos.get(position);
+                                      pedido.setStatus("Finalizado!");
+                                      pedido.atualizarStatus();
+                                 }
+                            });
+                            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialogInterface, int i) {
+
+                                 }
+                            });
+
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+
+                       }
+
+                       @Override
+                       public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                       }
+                  }
+          );
      }
 
      private void recuperarPedidos() {
@@ -128,14 +136,21 @@ public class PedidosActivity extends AppCompatActivity {
                               Pedido pedido = ds.getValue(Pedido.class);//Pegango response nesse formato
                               pedidos.add(pedido);
                          }
+                         recyclerPedidos.setVisibility(View.VISIBLE);
                          adapterPedido.notifyDataSetChanged();
                          dialog.dismiss();
+                    } else {
+                         dialog.dismiss();
+                         Toast.makeText(PedidosActivity.this,
+                                 "Não há pedidos! ", Toast.LENGTH_LONG).show();
                     }
                }
 
                @Override
                public void onCancelled(DatabaseError databaseError) {
-
+                    Toast.makeText(PedidosActivity.this,
+                            "Erro no banco! ", Toast.LENGTH_SHORT).show();
+                    Log.i("DataBase", "Firebase dados: ");
                }
           });
 

@@ -51,11 +51,12 @@
 
         <TextView
             android:id="@+id/textLogar"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Logar"
             android:layout_weight="0"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:gravity="center"/>
 
         <Switch
             android:id="@+id/switchAcesso"
@@ -67,11 +68,12 @@
 
         <TextView
             android:id="@+id/textViewCadastro"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Cadastre-se"
             android:layout_weight="0"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:gravity="center"/>
     </LinearLayout>
 
     <LinearLayout
@@ -86,11 +88,12 @@
 
         <TextView
             android:id="@+id/textUsuario"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Usuário"
             android:layout_weight="0"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:gravity="center"/>
 
         <Switch
             android:id="@+id/switchTipoUsuario"
@@ -102,11 +105,12 @@
 
         <TextView
             android:id="@+id/textViewEmpresa"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Empresa"
             android:layout_weight="0"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:gravity="center"/>
     </LinearLayout>
 
     <Button

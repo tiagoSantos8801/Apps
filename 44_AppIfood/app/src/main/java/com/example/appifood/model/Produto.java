@@ -10,9 +10,9 @@ public class Produto {
      Double preco;
 
      public Produto() {
-          DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
-          DatabaseReference produtoRef = databaseRef.child("produtos");
-          setidProduto(produtoRef.push().getKey());//Ja seta o id do produto no obj
+//          DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
+//          DatabaseReference produtoRef = databaseRef.child("produtos");
+//          setIdProduto(produtoRef.push().getKey());//Ja seta o id do produto no obj
      }
 
      public void salvar(){//Produtos separados de empreasas, mas o id do usuario a comum a ambos na identificacao
@@ -20,7 +20,7 @@ public class Produto {
           DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
           DatabaseReference produtoRef = databaseRef.child("produtos")
                                                        .child(getIdUsuario())
-                                                       .child(getidProduto());//Id fireBase push
+                                                       .child(getIdProduto());//Id fireBase push
           produtoRef.setValue(this);
 
      }
@@ -29,15 +29,15 @@ public class Produto {
           DatabaseReference databaseRef = ConfiguracaoFireBase.getFireBase();
           DatabaseReference produtoRef = databaseRef.child("produtos")
                   .child(getIdUsuario())
-                  .child(getidProduto());
+                  .child(getIdProduto());
           produtoRef.removeValue();//Removendo no da referencia
      }
 
-     public String getidProduto() {
+     public String getIdProduto() {
           return idProduto;
      }
 
-     public void setidProduto(String idProduto) {
+     public void setIdProduto(String idProduto) {
           this.idProduto = idProduto;
      }
 

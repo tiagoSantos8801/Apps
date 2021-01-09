@@ -8,14 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.AndroidException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -88,6 +87,7 @@ public class CardapioActivity extends AppCompatActivity {
           toolbar.setTitle("Cardápio");
           setSupportActionBar(toolbar);//Toolbar como o suporte para essa activity
           getSupportActionBar().setDisplayHomeAsUpEnabled(true);//Volta para o parent
+          getSupportActionBar().setDisplayShowHomeEnabled(true);
 
           //Cinfigura RecyclerView - Passando parametros para adapter
           recyclerProdutoCardapio.setLayoutManager(new LinearLayoutManager(this));
@@ -119,10 +119,10 @@ public class CardapioActivity extends AppCompatActivity {
 
           //Recuperando produtos da empresa
           recuperaProdutos();
-
           //Recuperando dados do usuario
           recuperarDadosUsuario();
-
+          //Recuperando pedido
+          recuperarPedido();
      }
 
      private void   confirmarQuantidade(int position) {
@@ -145,7 +145,7 @@ public class CardapioActivity extends AppCompatActivity {
                          Produto produtoSelecionado = produtos.get(position);//Produto selecionado
 
                          ItemPedido itemPedido = new ItemPedido();//Pega informacoes do obj produto
-                         itemPedido.setIdProduto(produtoSelecionado.getidProduto());
+                         itemPedido.setIdProduto(produtoSelecionado.getIdProduto());
                          itemPedido.setNomeProduto(produtoSelecionado.getNome());
                          itemPedido.setPreco(produtoSelecionado.getPreco());
                          itemPedido.setQuantidade(quantidade);
@@ -180,7 +180,7 @@ public class CardapioActivity extends AppCompatActivity {
                          pedidoRecuperado.salvar();
 
                          Toast.makeText(CardapioActivity.this,
-                                 "Pedido feito com sucesso!", Toast.LENGTH_SHORT).show();
+                                 "Adcionado a lista de pedidos!", Toast.LENGTH_SHORT).show();
 
                     } else {
                          Toast.makeText(CardapioActivity.this,
@@ -216,8 +216,13 @@ public class CardapioActivity extends AppCompatActivity {
                public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot != null){
                          usuario = dataSnapshot.getValue(Usuario.class);
+                         dialog.dismiss();
+                    } else {
+                         dialog.dismiss();
+                         Toast.makeText(CardapioActivity.this,
+                                 "Não há usuarios! ", Toast.LENGTH_LONG).show();
                     }
-                    recuperarPedido();
+
                }
 
                @Override
@@ -346,6 +351,9 @@ public class CardapioActivity extends AppCompatActivity {
                     pedidoRecuperado.confirmar();
                     pedidoRecuperado.remover();
                     pedidoRecuperado = null;
+
+                    Toast.makeText(CardapioActivity.this,
+                            "Pedido confirmado com sucesso!", Toast.LENGTH_SHORT).show();
                }
           });
           builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -358,7 +366,11 @@ public class CardapioActivity extends AppCompatActivity {
           builder.setView(editObservacao);//Setando EditText
           AlertDialog dialog = builder.create();
           dialog.show();
+     }
 
+     public void pedidosUsuario(View view){
+
+          startActivity(new Intent(CardapioActivity.this, PedidosUsuarioActivity.class));
      }
 
      public void inicializarComponentes(){

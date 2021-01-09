@@ -54,11 +54,12 @@ public class Pedido {
                                                        .child(getIdEmpresa())
                                                        .child(getIdusuario());
           pedidoRef.removeValue();
+
      }
 
      public void atualizarStatus() {
 
-          //Strutura have valor
+          //Strutura chave valor
           HashMap<String, Object> status = new HashMap<>();
           status.put("status", getStatus());
 

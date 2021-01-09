@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppIfood">
-        <activity android:name=".activity.PedidosActivity"
-            android:parentActivityName=".activity.EmpresaActivity"/>
+        <activity
+            android:name=".activity.PedidosUsuarioActivity"
+            android:parentActivityName=".activity.CardapioActivity"/>
+        <activity
+            android:name=".activity.PedidosActivity"
+            android:parentActivityName=".activity.EmpresaActivity" />
         <activity
             android:name=".activity.CardapioActivity"
             android:parentActivityName=".activity.HomeActivity" />

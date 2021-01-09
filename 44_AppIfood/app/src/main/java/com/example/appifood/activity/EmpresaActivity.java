@@ -77,6 +77,7 @@ public class EmpresaActivity extends AppCompatActivity {
                        public void onLongItemClick(View view, int position) {
 
                             Produto produtoSelecionado = produtos.get(position);
+                            produtos.remove(position);
                             produtoSelecionado.remover();
 
                             Toast.makeText(EmpresaActivity.this,
@@ -89,7 +90,6 @@ public class EmpresaActivity extends AppCompatActivity {
                        }
                   }
           ));
-
      }
 
      public void recuperaProdutos(){
